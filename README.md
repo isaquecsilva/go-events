@@ -8,7 +8,7 @@ go get github.com/isaquecsilva/go-events
 
 ## Usage:
 
-Example using a event **Listener** with no capacity limits:
+Example using an event **Listener** with no capacity limits:
 
 ```go
 package main
@@ -53,7 +53,7 @@ func main() {
 }
 ```
 
-Example using a event **Listener** with specific capacity:
+Example using an event **Listener** with specific capacity:
 
 ```go
 package main
