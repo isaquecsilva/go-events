@@ -14,17 +14,20 @@ var (
     mu sync.Mutex
 )
 
-// `Listener` represents the Listener for Events.
+// Listener represents the listener object that will contain events and execute event callbacks when they are called. 
 type Listener struct {
     events    []Event
     capacity  uint64
     wg        sync.WaitGroup
 }
 
+// NewListener creates a new Listener object and returns a pointer to it.
 func NewListener() *Listener {
     return &Listener{}
 }
 
+// NewListenerWithCapacity tries to create a new event listener with certain storage capacity for the amount of events that will be added.
+// It returns an error if capacity is 0.
 func NewListenerWithCapacity(capacity uint64) (*Listener, error) {
     if capacity == 0 {
 	return nil, fmt.Errorf("Listener capacity cannot be %d", capacity)
@@ -36,14 +39,17 @@ func NewListenerWithCapacity(capacity uint64) (*Listener, error) {
     }, nil
 }
 
+// GetCap returns the Listener capacity. If capacity was not set, as would be with NewListenerWithCapacity, the return value is 0.
 func (l *Listener) GetCap() int {
     return cap(l.events)
 }
 
+// GetLen returns Listener current length of added events.
 func (l *Listener) GetLen() int {
     return len(l.events)
 }
 
+// Add adds an Event to Listener. Whether the event is already set on Listener, or the addition exceeds Listener capacity (when it's set to have one), Add returns a non-nil error value. Otherwise, the error will be nil.
 func (l *Listener) Add(event Event) error {
     if len(l.events) == cap(l.events) && l.capacity > 0 {
 	return fmt.Errorf("event appending exceeds Listener buffer capacity")
@@ -59,6 +65,7 @@ func (l *Listener) Add(event Event) error {
     return nil
 }
 
+// Remove removes an Event that resides inside the Listener. If the event is not found in Listener, it returns an non-nil error value. 
 func (l *Listener) Remove(eventName string) error {
 
     if _, eventIndex := l.find(eventName); eventIndex != not_found_event {
@@ -85,6 +92,7 @@ func (l *Listener) Remove(eventName string) error {
     return nil
 }
 
+// Wait waits for an emitted Event to be run before continues.
 func (l *Listener) Wait() {
     l.wg.Wait()
 }
@@ -100,7 +108,7 @@ func (l *Listener) find(eventName string) (*Event, int) {
 }
 
 func (l *Listener) receive(eventName string, data any) error {
-    // try to found the event inside listener events list
+    // tries to found the event inside listener events list
     if event, _ := l.find(eventName); event != nil {
 	l.wg.Add(1)
 

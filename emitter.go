@@ -2,8 +2,7 @@ package goevents
 
 import "time"
 
-// `Emit` dispatches an event to the specified listener.
-// It returns a non nil error if fails.
+// Emit dispatches an event to the specified listener. It returns a non nil error if fails.
 func Emit(listener *Listener, eventName string, data any) error {
     var err error = listener.receive(eventName, data)
 
