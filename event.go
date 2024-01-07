@@ -7,10 +7,10 @@ package goevents
 // asynchronous code.
 type Event struct {
     EventName   string
-    Callback    func(data ...any)
+    Callback    func(data any)
 }
 
-func NewEvent(EventName string, Callback func(data ...any)) Event {
+func NewEvent(EventName string, Callback func(data any)) Event {
     return Event {
 	EventName,
 	Callback,
